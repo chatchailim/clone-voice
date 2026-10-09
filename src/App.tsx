@@ -4,8 +4,9 @@ import { VoiceCloneTab } from './components/VoiceCloneTab';
 import { SpeechStudioTab } from './components/SpeechStudioTab';
 import { SpectrumAnalysisTab } from './components/SpectrumAnalysisTab';
 import { CodeExportTab } from './components/CodeExportTab';
+import { HelpModal } from './components/HelpModal';
 import { VoiceProfile, GenerationResult } from './types';
-import { ShieldCheck, Cpu, Mic2, HeartHandshake } from 'lucide-react';
+import { ShieldCheck, Cpu, Mic2, HeartHandshake, HelpCircle, BookOpen } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'clone' | 'tts' | 'spectrum' | 'code'>('clone');
@@ -14,6 +15,7 @@ export default function App() {
   const [lastResult, setLastResult] = useState<GenerationResult | null>(null);
   const [serverReady, setServerReady] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isHelpOpen, setIsHelpOpen] = useState<boolean>(false);
 
   // Fetch initial voices and check server health
   useEffect(() => {
@@ -78,6 +80,7 @@ export default function App() {
         setActiveTab={setActiveTab}
         activeVoice={activeVoice}
         serverReady={serverReady}
+        onOpenHelp={() => setIsHelpOpen(true)}
       />
 
       {/* Main Content Viewport */}
@@ -123,6 +126,16 @@ export default function App() {
         )}
       </main>
 
+      {/* Interactive Help & Documentation Modal */}
+      <HelpModal
+        isOpen={isHelpOpen}
+        onClose={() => setIsHelpOpen(false)}
+        onSelectTab={(tab) => {
+          setActiveTab(tab);
+          setIsHelpOpen(false);
+        }}
+      />
+
       {/* Footer & Compliance Bar */}
       <footer className="border-t border-slate-800/80 bg-slate-950/60 py-6 text-xs text-slate-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -134,6 +147,14 @@ export default function App() {
           </div>
 
           <div className="flex items-center space-x-4">
+            <button
+              onClick={() => setIsHelpOpen(true)}
+              className="flex items-center space-x-1 text-cyan-400 hover:text-cyan-300 font-medium transition-colors cursor-pointer"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>คู่มือและวิธีใช้ (Help Guide)</span>
+            </button>
+            <span className="text-slate-600">&bull;</span>
             <span className="flex items-center space-x-1 text-emerald-400">
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>SynthID &amp; C2PA Protected</span>

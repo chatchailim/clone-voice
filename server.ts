@@ -248,6 +248,41 @@ app.get('/api/voices', (req: Request, res: Response) => {
   });
 });
 
+// Demo Audio Fixtures for Quick Testing & Pre-flight Diagnostics
+app.get('/api/demo-audio', (req: Request, res: Response) => {
+  const lang = (req.query.lang as string) === 'en-US' ? 'en-US' : 'th-TH';
+  const refText =
+    lang === 'th-TH'
+      ? 'สวัสดีครับ ผมขอแนะนำตัวอย่างเสียงต้นฉบับสำหรับการทดสอบระบบโคลนเสียง Gemini 3.8 Flash TTS โดยเราจะทำการบันทึกเสียงในห้องที่เงียบ และมีคุณภาพสัญญาณเสียงระดับ 24kHz Mono 16-bit PCM เพื่อให้ได้ผลลัพธ์ที่ดีที่สุดในการสังเคราะห์เสียงเสมือนจริง'
+      : 'Hello, this is a clean reference audio sample for testing Gemini 3.8 Flash TTS voice replication. Recorded in a quiet studio at 24kHz mono 16-bit PCM for optimal biometric voice modeling and acoustic clarity.';
+
+  const consentText =
+    lang === 'th-TH'
+      ? 'ฉันเป็นเจ้าของเสียงนี้ และฉันยินยอมให้ Google ใช้เสียงนี้เพื่อสร้างแบบจำลองเสียงสังเคราะห์'
+      : 'I am the owner of this voice and I consent to Google using this voice to create a synthetic voice model.';
+
+  const refBuffer = synthesizeHarmonicAudio(refText, 142, 'normal', 0.95);
+  const consentBuffer = synthesizeHarmonicAudio(consentText, 142, 'normal', 1.0);
+
+  res.json({
+    success: true,
+    language: lang,
+    voiceName: lang === 'th-TH' ? 'ดร. นครินทร์ (Dr. Nakarin - Demo Voice)' : 'David (Studio Speaker Demo)',
+    gender: 'male',
+    referenceAudio: {
+      data: refBuffer.toString('base64'),
+      mimeType: 'audio/wav',
+      duration: 32,
+    },
+    consentAudio: {
+      data: consentBuffer.toString('base64'),
+      mimeType: 'audio/wav',
+      duration: 6,
+    },
+    consentStatement: consentText,
+  });
+});
+
 // Speaker Verification & Voice Replication Enrollment
 app.post('/api/verify-voice', async (req: Request, res: Response) => {
   try {

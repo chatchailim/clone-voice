@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, ShieldCheck, Waves, Terminal, Mic2, Cpu, Volume2 } from 'lucide-react';
+import { Sparkles, ShieldCheck, Waves, Terminal, Mic2, Cpu, Volume2, HelpCircle } from 'lucide-react';
 import { VoiceProfile } from '../types';
 
 interface NavbarProps {
@@ -7,6 +7,7 @@ interface NavbarProps {
   setActiveTab: (tab: 'clone' | 'tts' | 'spectrum' | 'code') => void;
   activeVoice: VoiceProfile | null;
   serverReady: boolean;
+  onOpenHelp: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -14,6 +15,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   activeVoice,
   serverReady,
+  onOpenHelp,
 }) => {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl">
@@ -41,25 +43,37 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Quick specs / Status pill */}
-          <div className="hidden lg:flex items-center space-x-3">
-            <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+          {/* Quick specs / Status pill & Help Button */}
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="hidden lg:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs">
               <Cpu className="w-3.5 h-3.5 text-blue-400" />
               <span className="text-slate-400">Model:</span>
               <span className="font-mono font-semibold text-slate-200">gemini-3.8-flash-tts</span>
             </div>
 
-            <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400">
+            <div className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
               <span>SynthID &amp; C2PA</span>
             </div>
 
             {activeVoice && (
-              <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-300">
+              <div className="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-300">
                 <Volume2 className="w-3.5 h-3.5 text-cyan-400" />
-                <span className="truncate max-w-[140px] font-medium">{activeVoice.name.split('(')[0]}</span>
+                <span className="truncate max-w-[130px] font-medium">{activeVoice.name.split('(')[0]}</span>
               </div>
             )}
+
+            {/* Help & Guide Button */}
+            <button
+              onClick={onOpenHelp}
+              className="flex items-center space-x-1.5 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-blue-600/20 via-indigo-600/20 to-cyan-500/20 hover:from-blue-600/30 hover:to-cyan-500/30 border border-blue-500/40 text-xs font-semibold text-cyan-300 hover:text-white transition-all shadow-sm cursor-pointer hover:scale-[1.02]"
+              title="เปิดคู่มือการใช้งานและผังการทำงานของระบบ"
+            >
+              <HelpCircle className="w-4 h-4 text-cyan-400" />
+              <span className="hidden xs:inline">คู่มือและวิธีใช้</span>
+              <span className="xs:hidden">วิธีใช้</span>
+              <span className="hidden sm:inline font-mono text-[10px] bg-blue-500/20 px-1 rounded text-cyan-200">Help</span>
+            </button>
           </div>
         </div>
 
